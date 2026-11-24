@@ -1283,6 +1283,23 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   box-shadow: 0 0 10px rgba(232, 195, 122, 0.4);
   transition: width 0.25s ease;
 }
+.endless-panel {
+  position: absolute;
+  left: 24px;
+  top: 92px;
+  z-index: 14;
+  width: 286px;
+  padding: 12px;
+  border: 1px solid rgba(127, 212, 255, 0.42);
+  background: linear-gradient(180deg, rgba(20, 29, 38, 0.96), rgba(10, 13, 19, 0.94));
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+}
+.endless-head { display: flex; justify-content: space-between; gap: 8px; color: var(--frost); font-size: 10px; font-weight: 800; letter-spacing: 0.12em; }
+.endless-head b { color: var(--gold-bright); }
+.endless-panel p { margin: 7px 0 10px; font-size: 10px; line-height: 1.5; color: var(--text-subtle); }
+.endless-panel button { width: 100%; min-height: 48px; border: 1px solid var(--gold); border-radius: 5px; background: linear-gradient(180deg, #5a4928, #241e14); color: var(--gold-bright); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; cursor: pointer; }
+.endless-panel button:disabled { opacity: 0.42; cursor: not-allowed; }
 .topbar-tools { display: flex; align-items: center; gap: 7px; }
 .speed-btn, .next-wave-btn {
   min-height: 34px;
@@ -1313,6 +1330,7 @@ button:focus-visible, select:focus-visible, input:focus-visible {
   z-index: 12;
   width: 286px;
   padding: 12px;
+  pointer-events: auto;
   border: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(20, 22, 29, 0.94), rgba(10, 12, 17, 0.92));
   box-shadow: var(--shadow-lg);
@@ -1497,6 +1515,7 @@ button:disabled { cursor: not-allowed; }
   margin: 0 0 10px;
 }
 .specialization-btn {
+  pointer-events: auto;
   min-height: 48px;
   padding: 7px 6px;
   border: 1px solid var(--line-soft);
@@ -1649,7 +1668,7 @@ button:disabled { cursor: not-allowed; }
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
-.touch-ability-pair { display: flex; align-items: flex-end; gap: 8px; pointer-events: none; }
+.touch-ability-pair { position: relative; z-index: 4; display: flex; align-items: flex-end; gap: 8px; pointer-events: none; }
 .touch-action {
   display: flex;
   flex-direction: column;
@@ -2017,6 +2036,8 @@ html.reduced-motion *::after {
     margin: 0;
   }
   .commander-panel { display: none; }
+  .endless-panel { left: calc(var(--touch-edge) + var(--safe-left)); top: calc(var(--safe-top) + 104px); width: min(240px, calc(100vw - 32px)); padding: 9px; }
+  .hud:has(.tower-inspector:not(.hidden)) .endless-panel { opacity: 0; pointer-events: none; }
   .crest-panel { min-width: 0; padding: 6px 8px; gap: 0; }
   .crest-icon { display: none; }
   .crest-body { width: clamp(112px, 34vw, 190px); min-width: 0; gap: 4px; }
@@ -2155,7 +2176,7 @@ html.reduced-motion *::after {
     right: calc(var(--touch-edge) + var(--safe-right));
     bottom: calc(var(--touch-context-bottom) + var(--touch-context-h) + var(--touch-gap));
     left: calc(var(--touch-edge) + var(--safe-left));
-    z-index: 16;
+    z-index: 14;
     width: auto;
     max-height: none;
     padding: 10px;

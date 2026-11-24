@@ -1,19 +1,21 @@
 const CACHE_PREFIX = 'ironhold-';
-const BUILD_ID = 'cfc9e9fb008c9918';
+const BUILD_ID = '2a600b2ad2e2e964';
 const CACHE_NAME = `${CACHE_PREFIX}${BUILD_ID}`;
 const INDEX_URL = new URL('./index.html', self.registration.scope).href;
 const SCOPE_URL = self.registration.scope;
 const PRECACHE_URLS = [
   "./",
-  "./assets/ironhold.19f0905f5eb1.css",
-  "./assets/ironhold.4a93527a23ee.js",
+  "./assets/ironhold.4db55f9a9d8a.js",
+  "./assets/ironhold.62f83eb383b4.css",
   "./favicon.svg",
   "./icons/ironhold-maskable.svg",
   "./icons/ironhold.svg",
   "./index.html",
   "./manifest.webmanifest",
   "./models/sunward-ranger.glb",
-  "./robots.txt"
+  "./robots.txt",
+  "./textures/bark.jpg",
+  "./textures/leaves.jpg"
 ];
 
 function isHashedAsset(url) {

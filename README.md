@@ -1,6 +1,6 @@
 # IRONHOLD — The Last Bastion
 
-Public runtime build for [IRONHOLD](https://nomoshkar.github.io/island-tower-defense-web/).
+Public runtime build **v1.2.1** for [IRONHOLD](https://nomoshkar.github.io/island-tower-defense-web/).
 
 This repository contains only the deployable web runtime. Source, tests, development tooling, and validation reports are maintained separately in the private project repository.
 

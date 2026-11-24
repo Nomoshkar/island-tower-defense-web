@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./assets/ironhold.19f0905f5eb1.css">
+<link rel="stylesheet" href="./assets/ironhold.62f83eb383b4.css">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 </head>
@@ -168,6 +168,13 @@
         <button class="icon-btn" id="btnMute" type="button" title="Mute audio (M)" aria-label="Mute audio" aria-pressed="false"></button>
       </div>
     </div>
+  </div>
+
+  <!-- Endless ascension money sink -->
+  <div class="endless-panel hidden" id="endlessPanel" role="region" aria-label="Endless ascension">
+    <div class="endless-head"><span>ENDLESS ASCENSION</span><b id="ascensionLevelDisplay">0</b></div>
+    <p id="ascensionDescription">Unlocks at wave 21.</p>
+    <button id="btnAscend" type="button" disabled>ASCEND · 900g</button>
   </div>
 
   <!-- Combo -->
@@ -360,9 +367,10 @@
     <h2 class="panel-title" id="helpTitle">FIELD GUIDE</h2>
     <div class="guide-grid">
       <section><h3>COMMAND THE HERO</h3><p>Click or tap the ground to move. The hero attacks automatically. Use Sun Nova when surrounded.</p></section>
-      <section><h3>RAISE & UPGRADE</h3><p>Select a tower card, then click a glowing pad or press E nearby. Click a built tower to upgrade, retarget, or sell it.</p></section>
-      <section><h3>CONTROL THE RHYTHM</h3><p>Waves end when the field is clear. During the countdown, press Enter to call the next wave early and earn bonus gold.</p></section>
+      <section><h3>RAISE &amp; UPGRADE</h3><p>Select a tower card, then click a glowing pad or press E nearby. Click a built tower to upgrade, retarget, or sell it. At level 3, choose one of two special powers in the tower inspector.</p></section>
+      <section><h3>CONTROL THE RHYTHM</h3><p>Waves end when the field is clear. During the countdown, press Enter to call the next wave early and earn bonus gold. Use F for faster battles.</p></section>
       <section><h3>BUILD YOUR COMMANDER</h3><p>Kills and cleared waves earn XP. Every commander level offers a draft of powerful run-long blessings.</p></section>
+      <section><h3>ENDLESS ASCENSION</h3><p>After campaign victory, Endless Siege adds mini-bosses every 3 waves, giants every 5, and Warlords every 10. At wave 21, spend gold on Ascension to raise tower levels, HP, and hero damage.</p></section>
       <section><h3>KNOW YOUR ENEMIES</h3><p>Runners rush, bombers explode, brutes soak damage, and bosses can shrug off control. Mix towers to cover their weaknesses.</p></section>
       <section><h3>ESSENTIAL KEYS</h3><p><kbd>1–4</kbd> towers · <kbd>Q</kbd> upgrade · <kbd>F</kbd> speed · <kbd>Space</kbd> Nova · <kbd>Esc</kbd> pause</p></section>
     </div>
@@ -403,7 +411,7 @@
   }, 15000);
 </script>
 
-<script type="module" src="./assets/ironhold.4a93527a23ee.js"></script>
+<script type="module" src="./assets/ironhold.4db55f9a9d8a.js"></script>
 <script>
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     window.addEventListener('load', function () {
