@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">IRONHOLD</title>
+  <desc id="desc">A gold tower crest on a full-bleed dark background</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#151b26"/>
+      <stop offset="1" stop-color="#080a0f"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8dfa0"/>
+      <stop offset="0.5" stop-color="#d8a83e"/>
+      <stop offset="1" stop-color="#9a7424"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="154" fill="none" stroke="#4d5668" stroke-width="4"/>
+  <path d="M256 112l102 37v77c0 61-41 104-102 133-61-29-102-72-102-133v-77l102-37z" fill="url(#gold)" stroke="#5c451c" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M198 210h116v126H198zM186 208l70-63 70 63zM186 336h140v24H186z" fill="#3b2b14"/>
+  <path d="M242 242h28v58h-28z" fill="#f3d27a"/>
+  <path d="M186 208l70-63 70 63" fill="none" stroke="#2a1d0c" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M198 336h116v24H198z" fill="none" stroke="#2a1d0c" stroke-width="8"/>
+  <path d="M226 292l30 20 30-20" fill="none" stroke="#f3d27a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

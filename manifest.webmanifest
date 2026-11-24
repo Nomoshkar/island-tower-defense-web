@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "IRONHOLD — The Last Bastion",
+  "short_name": "IRONHOLD",
+  "description": "A cinematic island tower-defense game. Raise towers, evolve your hero, and hold back the Bandit Warlord.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "icons": [
+    {
+      "src": "./icons/ironhold.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/ironhold-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

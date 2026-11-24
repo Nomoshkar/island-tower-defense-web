@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html data-asset-base="./" lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<meta name="description" content="IRONHOLD: The Last Bastion — a cinematic island tower-defense game. Raise towers, evolve your hero, draft commander abilities, and hold back the Bandit Warlord.">
+<title>IRONHOLD — The Last Bastion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/ironhold.19f0905f5eb1.css">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+</head>
+<body>
+
+<!-- ============================ LOADING ============================ -->
+<div id="loadingScreen" role="region" aria-label="Loading game">
+  <div class="load-crest">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M32 6l22 8v16c0 13-9 22-22 28C19 52 10 43 10 30V14L32 6z"/>
+      <path d="M20 26l5 9 7-5 7 5 5-9" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="load-title">IRONHOLD</div>
+  <div class="load-sub" id="loadSub">FORGING THE REALM</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<main id="ironholdApp">
+<canvas id="renderCanvas" aria-label="IRONHOLD battlefield. Use WASD, arrow keys, the touch joystick, or tap the ground to move your hero.">Your browser needs WebGL to play IRONHOLD.</canvas>
+
+<!-- ============================ START ============================ -->
+<div class="screen start-screen" id="startScreen">
+  <div class="start-vignette"></div>
+  <div class="start-inner">
+    <div class="start-kicker"><span></span> A TALE OF IRON AND FIRE <span></span></div>
+    <h1 class="game-logo">IRONHOLD</h1>
+    <div class="logo-rule"><i></i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18l1.5-9 4.5 4L12 6l3 7 4.5-4L21 18H3z"/></svg><i></i></div>
+    <h2 class="game-subtitle">THE LAST BASTION</h2>
+    <p class="start-blurb">
+      The bandit horde marches on the last free kingdom. Hold the walls,
+      raise your towers, and ride out beneath the setting sun.
+    </p>
+
+    <div class="start-features">
+      <div class="feature"><b>4</b><span>TOWER TYPES</span></div>
+      <div class="feature"><b>16</b><span>TOWER PADS</span></div>
+      <div class="feature"><b>15</b><span>WAVES</span></div>
+      <div class="feature"><b>4</b><span>HERO STAGES</span></div>
+      <div class="feature"><b>1</b><span>WARLORD</span></div>
+    </div>
+
+    <div class="difficulty-picker">
+      <label for="difficultySelect">CHOOSE YOUR DIFFICULTY</label>
+      <select id="difficultySelect" aria-describedby="difficultyDescription">
+        <option value="normal">Normal</option>
+        <option value="veteran">Veteran</option>
+        <option value="nightmare">Nightmare</option>
+      </select>
+      <p id="difficultyDescription">A balanced defense for new commanders.</p>
+    </div>
+
+    <button class="btn-primary btn-start" id="btnStart">
+      <span class="btn-glow"></span>
+      <span class="btn-label">BEGIN THE SIEGE</span>
+    </button>
+    <div class="best-score" id="bestScore"></div>
+    <div class="profile-rank" id="profileRank"></div>
+    <div class="start-utility">
+      <button class="btn-ghost" id="btnHelp">FIELD GUIDE</button>
+      <button class="btn-ghost" id="btnSettingsStart">SETTINGS</button>
+    </div>
+
+    <div class="start-controls" aria-label="Controls">
+      <div><kbd>CLICK / TAP</kbd><span>MOVE / BUILD</span></div>
+      <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>MOVE</span></div>
+      <div><kbd>E</kbd><span>BUILD</span></div>
+      <div><kbd>Q</kbd><span>UPGRADE</span></div>
+      <div><kbd>G</kbd><span>WAR RALLY</span></div>
+      <div><kbd>F</kbd><span>2× SPEED</span></div>
+      <div><kbd>ENTER</kbd><span>NEXT WAVE</span></div>
+      <div><kbd>SPACE</kbd><span>SUN NOVA</span></div>
+      <div class="touch-control-note"><span class="touch-note-icon" aria-hidden="true">☝</span><span>TOUCH: JOYSTICK + ON-SCREEN COMMANDS</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ HUD ============================ -->
+<div class="hud hidden" id="hud">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-side left">
+      <div class="crest-panel">
+        <div class="crest-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 2.6v5.6c0 4.6-3 7.9-7 9.8-4-1.9-7-5.2-7-9.8V5.6L12 3z"/><path d="M12 8v5"/></svg>
+        </div>
+        <div class="crest-body">
+          <div class="crest-top">
+            <span class="hud-label">BASTION</span>
+            <span class="castle-level" id="castleLevelDisplay">LV 0</span>
+          </div>
+          <div class="hp-row">
+            <div class="hp-bar" role="progressbar" aria-label="Bastion health" aria-valuemin="0" aria-valuemax="120" aria-valuenow="120"><div class="hp-fill" id="hpBar" style="width:100%"></div></div>
+            <span class="hp-text" id="hpText">120 / 120</span>
+          </div>
+        </div>
+      </div>
+      <div class="commander-panel">
+        <div class="commander-top"><span id="commanderLevel">COMMANDER 1</span><span id="commanderXpText">0 / 70 XP</span></div>
+        <div class="commander-track"><div id="commanderXpFill"></div></div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="wave-panel">
+        <div class="wave-top">
+          <span class="wave-label">WAVE</span>
+          <span class="wave-num" id="waveDisplay">1</span>
+          <span class="wave-total">/ 15</span>
+          <span class="wave-time" id="timeDisplay">68s</span>
+        </div>
+        <div class="wave-bar" role="progressbar" aria-label="Wave progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="wave-fill" id="waveFill"></div></div>
+      </div>
+      <div class="boss-bar" id="bossBar" aria-hidden="true">
+        <div class="boss-head">
+          <span class="boss-skull"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a7 7 0 0 0-7 7c0 2.4 1.2 4.3 3 5.4V19a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.6c1.8-1.1 3-3 3-5.4a7 7 0 0 0-7-7z"/><circle cx="9.5" cy="11" r="1.2" fill="currentColor"/><circle cx="14.5" cy="11" r="1.2" fill="currentColor"/></svg></span>
+          <span class="boss-name" id="bossName">BOSS</span>
+        </div>
+        <div class="boss-track" role="progressbar" aria-label="Boss health" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><div class="boss-fill" id="bossFill"></div></div>
+      </div>
+      <button class="next-wave-btn" id="btnNextWave" type="button" hidden></button>
+      <div class="touch-utility" role="group" aria-label="Battle controls">
+        <button class="touch-utility-btn" id="touchPause" type="button" aria-label="Pause game" aria-pressed="false">
+          <span class="touch-utility-icon" aria-hidden="true">Ⅱ</span><span>PAUSE</span>
+        </button>
+        <button class="touch-utility-btn" id="touchSpeed" type="button" aria-label="Toggle game speed" aria-pressed="false">
+          <span class="touch-speed-value" aria-hidden="true">1×</span><span>SPEED</span>
+        </button>
+        <button class="touch-utility-btn touch-call-wave" id="touchCallWave" type="button" aria-label="Call the next wave early" disabled>
+          <span class="touch-utility-icon" aria-hidden="true">»</span><span>CALL WAVE</span>
+        </button>
+        <button class="touch-utility-btn" id="touchSettings" type="button" aria-label="Open settings">
+          <span class="touch-utility-icon" aria-hidden="true">⚙</span><span>SETTINGS</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="topbar-side right">
+      <div class="res-panel">
+        <div class="res">
+          <span class="res-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10M9.4 9.4h4.2a2 2 0 0 1 0 4H9.4h4.9a2 2 0 0 1 0 4H9.4"/></svg></span>
+          <span class="res-value" id="goldDisplay">30</span>
+          <span class="res-sub" id="incomeDisplay">—</span>
+        </div>
+        <div class="res">
+          <span class="res-icon foes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a7 7 0 0 0-7 7c0 2.4 1.2 4.3 3 5.4V19a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.6c1.8-1.1 3-3 3-5.4a7 7 0 0 0-7-7z"/></svg></span>
+          <span class="res-value" id="enemyDisplay">0</span>
+          <span class="res-sub">FOES</span>
+        </div>
+      </div>
+      <div class="topbar-tools">
+        <button class="speed-btn" id="btnSpeed" type="button" title="Toggle game speed (F)" aria-label="Toggle game speed" aria-pressed="false">1×</button>
+        <button class="icon-btn" id="btnPause" type="button" title="Pause (Esc)" aria-label="Pause" aria-pressed="false">Ⅱ</button>
+        <button class="icon-btn" id="btnSettings" type="button" title="Settings" aria-label="Settings">⚙</button>
+        <button class="icon-btn" id="btnMute" type="button" title="Mute audio (M)" aria-label="Mute audio" aria-pressed="false"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Combo -->
+  <div class="combo" id="comboDisplay">
+    <span class="combo-label">COMBO</span>
+    <span class="combo-num" id="comboNum">×0</span>
+  </div>
+
+  <!-- Selected tower inspector -->
+  <div class="tower-inspector hidden" id="towerInspector">
+    <div class="inspector-head"><span id="selectedTowerName">TOWER</span><span id="selectedTowerLevel">LV 1</span></div>
+    <div class="inspector-stats" id="selectedTowerStats"></div>
+    <div class="specialization-choices" id="specializationChoices" role="group" aria-label="Tower specializations">
+      <button type="button" class="specialization-btn" data-specialization="0" aria-pressed="false">SPECIALIZE I</button>
+      <button type="button" class="specialization-btn" data-specialization="1" aria-pressed="false">SPECIALIZE II</button>
+    </div>
+    <div class="inspector-actions">
+      <button type="button" id="btnTowerUpgrade">UPGRADE</button>
+      <button type="button" id="btnTowerTarget" title="Cycle target priority">TARGET: FIRST</button>
+      <button type="button" id="btnTowerSell" title="Sell selected tower">SELL</button>
+    </div>
+  </div>
+
+  <!-- Bottom left: tower quick-select dock (desktop cards / mobile dock) -->
+  <div class="build-panel mobile-tower-dock" id="mobileTowerDock" role="group" aria-label="Tower quick select">
+    <div class="build-head"><span>RAISE A TOWER</span><span class="build-hint">1 – 4</span></div>
+    <div class="tower-cards" id="towerCards"></div>
+  </div>
+
+  <!-- Bottom right: castle / hero / repair command dock -->
+  <div class="command-panel mobile-command-dock" id="mobileCommandDock" role="group" aria-label="Castle, hero, and repair commands">
+    <button class="command-btn" id="btnUpgradeCastle" type="button">
+      <span class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 20V9l4 3 4-6 4 6 4-3v11H4z"/></svg></span>
+      <span class="cmd-body">
+        <span class="cmd-mobile-label">CASTLE</span>
+        <span class="cmd-title" id="castleBtnTitle">Upgrade Castle</span>
+        <span class="cmd-sub" id="subCastle">+HP · +income · tower levels</span>
+      </span>
+      <span class="cmd-cost" id="costCastle">30</span>
+    </button>
+    <button class="command-btn" id="btnUpgradeHero" type="button">
+      <span class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M14.5 3.5L21 3l-.5 6.5L9 21l-6-6L14.5 3.5zM5.5 13.5l5 5M3 21l3.5-3.5"/></svg></span>
+      <span class="cmd-body">
+        <span class="cmd-mobile-label">HERO</span>
+        <span class="cmd-title" id="heroBtnTitle">Upgrade Hero</span>
+        <span class="cmd-sub" id="subHero">Ranger → Mounted Knight</span>
+      </span>
+      <span class="cmd-cost" id="costHero">40</span>
+    </button>
+    <button class="command-btn repair" id="btnRepair" type="button">
+      <span class="cmd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/><path d="M12 8v6M9 11h6"/></svg></span>
+      <span class="cmd-body">
+        <span class="cmd-mobile-label">REPAIR</span>
+        <span class="cmd-title">Repair Bastion</span>
+        <span class="cmd-sub">Restore 40 HP</span>
+      </span>
+      <span class="cmd-cost" id="costRepair">20</span>
+    </button>
+  </div>
+
+  <!-- Extreme bottom: prompt + desktop abilities -->
+  <div class="action-row">
+    <div class="tutorial-hint" id="tutorialHint"></div>
+    <button class="build-prompt" id="buildPrompt" type="button" aria-label="Build or upgrade nearby tower"></button>
+    <div class="ability-pair" role="group" aria-label="Hero abilities">
+      <button class="ability" id="abilityBox" type="button" title="Sun Nova (SPACE)" aria-label="Cast Sun Nova">
+        <div class="ability-ring">
+          <div class="ability-cd" id="abilityCd"></div>
+          <div class="ability-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+            <span class="ability-cd-text"></span>
+          </div>
+        </div>
+        <div class="ability-label"><b>SPACE</b><span>SUN NOVA</span></div>
+      </button>
+      <button class="ability ability-rally" id="rallyAbility" type="button" title="War Rally (G)" aria-label="Cast War Rally">
+        <div class="ability-ring">
+          <div class="ability-cd" id="rallyAbilityCd"></div>
+          <div class="ability-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4M4 5c4-4 8 4 16 0v9c-8 4-12-4-16 0"/><path d="M8 8v7M12 6v9M16 5v9"/></svg>
+            <span class="ability-cd-text" id="rallyAbilityCdText"></span>
+          </div>
+        </div>
+        <div class="ability-label"><b>G</b><span>WAR RALLY</span></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Touch controls (shown on coarse pointers and narrow screens) -->
+  <div class="touch-controls" id="touchControls" aria-label="Touch game controls">
+    <p class="touch-hint" id="touchHint">Tap a tower, then a glowing pad to build.</p>
+
+    <div class="touch-context" role="group" aria-label="Contextual tower actions">
+      <button class="touch-context-btn" id="touchBuild" type="button" aria-label="Build selected tower" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6l4-4 4 4-4 4M12 8l4 4M3 21l9-9M7 17l-4 4M15 3l6 6"/></svg>
+        <span class="touch-context-copy"><b>BUILD</b><small>SELECT A TOWER</small></span>
+      </button>
+      <button class="touch-context-btn" id="touchUpgrade" type="button" aria-label="Upgrade nearby tower" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V6M6 12l6-6 6 6M5 21h14"/></svg>
+        <span class="touch-context-copy"><b>UPGRADE</b><small>NEARBY TOWER</small></span>
+      </button>
+    </div>
+
+    <div class="touch-movement-row">
+      <div class="joystick" id="joystick" role="group" tabindex="0" aria-label="Movement joystick. Use WASD or arrow keys to move."><div class="joystick-knob" id="joystickKnob"></div></div>
+      <div class="touch-ability-pair" role="group" aria-label="Touch hero abilities">
+        <button class="touch-action touch-nova" id="touchNova" type="button" aria-label="Cast Sun Nova">
+          <span class="touch-ring"><span class="touch-cd" id="touchNovaCd"></span><span class="touch-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>
+            <span class="touch-cd-text" id="touchNovaCdText"></span>
+          </span></span>
+          <span class="touch-action-label">NOVA</span>
+        </button>
+        <button class="touch-action touch-rally" id="touchRally" type="button" aria-label="Cast War Rally">
+          <span class="touch-ring"><span class="touch-cd" id="touchRallyCd"></span><span class="touch-core">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V4M4 5c4-4 8 4 16 0v9c-8 4-12-4-16 0"/><path d="M8 8v7M12 6v9M16 5v9"/></svg>
+            <span class="touch-cd-text" id="touchRallyCdText"></span>
+          </span></span>
+          <span class="touch-action-label">RALLY</span>
+        </button>
+        <button class="touch-action legacy-touch-action" id="touchAbility" type="button" aria-label="Cast Sun Nova" hidden>NOVA</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ ANNOUNCEMENT ============================ -->
+<div class="announcement" id="announcement" aria-live="assertive" aria-atomic="true">
+  <div class="ann-main" id="annMain"></div>
+  <div class="ann-sub" id="annSub"></div>
+</div>
+<div class="sr-only" id="accessibilityStatus" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ============================ PAUSE ============================ -->
+<div class="screen overlay-screen" id="pauseScreen">
+  <div class="panel-card">
+    <div class="panel-kicker">THE BATTLE WAITS</div>
+    <h2 class="panel-title">PAUSED</h2>
+    <p class="panel-text">The horde holds its breath. Take stock of your walls.</p>
+    <div class="panel-buttons">
+      <button class="btn-primary" id="btnResume">RESUME DEFENSE</button>
+      <button class="btn-ghost" id="btnRestart">RESTART</button>
+      <button class="btn-ghost" id="btnHelpPause">FIELD GUIDE</button>
+      <button class="btn-ghost" id="btnSettingsPause">SETTINGS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ GAME OVER ============================ -->
+<div class="screen overlay-screen defeat" id="gameOverScreen">
+  <div class="panel-card">
+    <div class="panel-kicker danger">THE LIGHT IS EXTINGUISHED</div>
+    <h2 class="panel-title">THE BASTION FALLS</h2>
+    <p class="panel-text">The walls are broken and the horde floods the keep. The realm mourns.</p>
+    <div class="stat-grid" id="goStats"></div>
+    <div class="panel-buttons">
+      <button class="btn-primary" id="btnRestartGo">DEFEND AGAIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ VICTORY ============================ -->
+<div class="screen overlay-screen victory" id="victoryScreen">
+  <div class="panel-card">
+    <div class="panel-kicker gold">THE REALM STANDS</div>
+    <h2 class="panel-title">VICTORY</h2>
+    <p class="panel-text">The Warlord is slain. Your banner flies above a kingdom that will remember this dawn.</p>
+    <div class="stat-grid" id="winStats"></div>
+    <div class="panel-buttons">
+      <button class="btn-primary" id="btnRestartWin" type="button">DEFEND AGAIN</button>
+      <button class="btn-ghost" id="btnEndless" type="button">ENDLESS SIEGE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ COMMANDER DRAFT ============================ -->
+<div class="screen overlay-screen draft-screen" id="draftScreen" role="dialog" aria-modal="true" aria-labelledby="draftTitle">
+  <div class="draft-card">
+    <div class="panel-kicker gold">COMMANDER LEVEL UP</div>
+    <h2 class="panel-title" id="draftTitle">CHOOSE YOUR BLESSING</h2>
+    <p class="panel-text">The battle waits. Choose one permanent advantage for this run.</p>
+    <div class="draft-options" id="draftOptions"></div>
+  </div>
+</div>
+
+<!-- ============================ FIELD GUIDE ============================ -->
+<div class="screen overlay-screen info-screen" id="helpScreen" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="panel-card wide-panel">
+    <div class="panel-kicker">COMMANDER'S HANDBOOK</div>
+    <h2 class="panel-title" id="helpTitle">FIELD GUIDE</h2>
+    <div class="guide-grid">
+      <section><h3>COMMAND THE HERO</h3><p>Click or tap the ground to move. The hero attacks automatically. Use Sun Nova when surrounded.</p></section>
+      <section><h3>RAISE & UPGRADE</h3><p>Select a tower card, then click a glowing pad or press E nearby. Click a built tower to upgrade, retarget, or sell it.</p></section>
+      <section><h3>CONTROL THE RHYTHM</h3><p>Waves end when the field is clear. During the countdown, press Enter to call the next wave early and earn bonus gold.</p></section>
+      <section><h3>BUILD YOUR COMMANDER</h3><p>Kills and cleared waves earn XP. Every commander level offers a draft of powerful run-long blessings.</p></section>
+      <section><h3>KNOW YOUR ENEMIES</h3><p>Runners rush, bombers explode, brutes soak damage, and bosses can shrug off control. Mix towers to cover their weaknesses.</p></section>
+      <section><h3>ESSENTIAL KEYS</h3><p><kbd>1–4</kbd> towers · <kbd>Q</kbd> upgrade · <kbd>F</kbd> speed · <kbd>Space</kbd> Nova · <kbd>Esc</kbd> pause</p></section>
+    </div>
+    <div class="panel-buttons"><button class="btn-primary" id="btnCloseHelp">RETURN</button></div>
+  </div>
+</div>
+
+<!-- ============================ SETTINGS ============================ -->
+<div class="screen overlay-screen info-screen" id="settingsScreen" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+  <div class="panel-card settings-card">
+    <div class="panel-kicker">MAKE THE BATTLE YOURS</div>
+    <h2 class="panel-title" id="settingsTitle">SETTINGS</h2>
+    <label class="setting-row"><span><b>Graphics quality</b><small>Auto adapts to your frame rate.</small></span><select id="qualitySelect"><option value="auto">Auto</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label>
+    <label class="setting-row"><span><b>Camera shake</b><small>Impact feedback and explosions.</small></span><input id="shakeToggle" type="checkbox" checked></label>
+    <label class="setting-row"><span><b>Reduced motion</b><small>Disable shake, flashes, and heavy camera movement.</small></span><input id="motionToggle" type="checkbox"></label>
+    <label class="setting-row"><span><b>High contrast</b><small>Stronger borders, text, and focus indicators.</small></span><input id="highContrastToggle" type="checkbox"></label>
+    <label class="setting-row"><span><b>Large text</b><small>Increase interface text without zooming the page.</small></span><input id="textSizeToggle" type="checkbox"></label>
+    <label class="setting-row"><span><b>Colorblind-safe palette</b><small>Use blue, orange, and patterns instead of red/green alone.</small></span><input id="colorblindToggle" type="checkbox"></label>
+    <div class="settings-note">Quality changes apply immediately. Progress is saved locally in this browser.</div>
+    <div class="panel-buttons"><button class="btn-primary" id="btnCloseSettings">RETURN</button></div>
+  </div>
+</div>
+
+</main>
+
+<!-- ============================ SCRIPT ============================ -->
+<script>
+  // Readable fallback if WebGL or the module CDN is unavailable.
+  window.addEventListener('error', function () {
+    if (window.__ironhold) return;
+    var sub = document.getElementById('loadSub');
+    if (sub) sub.textContent = 'UNABLE TO FORGE THE REALM — CHECK WEBGL AND YOUR CONNECTION';
+  });
+  setTimeout(function () {
+    if (window.__ironhold) return;
+    var sub = document.getElementById('loadSub');
+    if (sub) sub.textContent = 'LOADING IS TAKING LONGER THAN EXPECTED — RELOAD TO RETRY';
+  }, 15000);
+</script>
+
+<script type="module" src="./assets/ironhold.4a93527a23ee.js"></script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(function (error) {
+        console.warn('Service worker registration failed:', error);
+      });
+    });
+  }
+</script>
+</body>
+</html>
